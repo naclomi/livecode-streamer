@@ -2,7 +2,7 @@ import importlib
 import traceback
 
 plugin_module_names = [
-    "renderer", "pygment_renderer"
+    "renderer", "pygment_renderer", "nbconvert_renderer"
 ]
 plugin_modules = {}
 

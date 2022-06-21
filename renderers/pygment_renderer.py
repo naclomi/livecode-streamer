@@ -4,6 +4,7 @@ import pygments
 import pygments.lexers
 import pygments.util
 import pygments.formatters
+
 from renderers.renderer import RendererPlugin
 
 class PygmentsRenderer(RendererPlugin):

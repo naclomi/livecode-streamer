@@ -22,7 +22,8 @@ class UploaderPlugin(object):
         self.uri = uri
 
         config_key = "{:}/{:}".format(type(self).__name__, uri)
-        self.config = json.loads(keyring.get_password("livecode-streamer", config_key))
+        raw_config = keyring.get_password("livecode-streamer", config_key)
+        self.config = json.loads(raw_config) if raw_config is not None else None
         if force_configuration or self.config is None:
             self.config = type(self).configure(uri, force_configuration, self.config if self.config is not None else {})
             if len(self.config) > 0:

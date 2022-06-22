@@ -13,8 +13,8 @@ import keyring
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-from renderers import get_renderer
-from uploaders import get_uploader
+from renderers import renderers, get_renderer
+from uploaders import uploaders, get_uploader
 
 class UploadHandler(FileSystemEventHandler):
     def __init__(self, watch_uri, local_uri, uploader, min_event_delta=.5):
@@ -70,13 +70,30 @@ class UploadHandler(FileSystemEventHandler):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="Supported uploader plugins: {:}\nSupported render plugins: {:}".format(
+            ", ".join(plugin .__name__ for plugin in uploaders),
+            ", ".join(plugin .__name__ for plugin in renderers)
+    ))
     parser.add_argument("watch_dir", metavar="WATCH_DIR", help="Directory to watch for changing source files")
     parser.add_argument("remote_uri", metavar="REMOTE_URI", help="Remote URI to upload HTML-rendered copies of the watched source to")
     parser.add_argument("--configure-uploader", action="store_true", help="Configure settings for the in-use uploader plugin")
+    parser.add_argument("--uploader", type=str, help="Use a specific uploader plugin, rather than choose one automatically")
 
     args = parser.parse_args()
-    uploader_type = get_uploader(args.remote_uri)
+
+    if args.uploader is None:
+        uploader_type = get_uploader(args.remote_uri)
+    else:
+        uploader_type = None
+        for uploader in uploaders:
+            if uploader.__name__ == args.uploader:
+                uploader_type = uploader
+                break
+        if uploader_type is None:
+            sys.stderr.write("Could not find specified uploader plugin\n")
+            sys.exit(1)
     print("Using " + uploader_type.__name__)
     uploader = uploader_type(args.remote_uri, args.configure_uploader)
 

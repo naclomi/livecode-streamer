@@ -9,7 +9,7 @@ from renderers.renderer import RendererPlugin
 
 class PygmentsRenderer(RendererPlugin):
     @classmethod
-    def canHandleFile(cls, in_filename):
+    def canHandleURI(cls, in_filename):
         try:
             pygments.lexers.get_lexer_for_filename(in_filename)
             return True

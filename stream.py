@@ -42,7 +42,7 @@ class UploadHandler(FileSystemEventHandler):
             self.lastUploadedVersion[in_filename] = mod_time
 
             if in_filename not in self.renderers:
-                self.renderers[in_filename] = get_renderer(in_filename, out_full_filename)
+                self.renderers[in_filename] = get_renderer(in_filename)(in_filename, out_full_filename)
             self.renderers[in_filename].render()
             print("Processed {:} into {:} using {:}".format(in_filename, out_full_filename, type(self.renderers[in_filename]).__name__))
 

@@ -7,7 +7,7 @@ from renderers.renderer import RendererPlugin
 
 class NbconvertRenderer(RendererPlugin):
     @classmethod
-    def canHandleFile(cls, in_filename):
+    def canHandleURI(cls, in_filename):
         try:
             with open(in_filename, "r") as f:
                 raw_nb = f.read()

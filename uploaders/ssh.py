@@ -3,7 +3,8 @@ import subprocess
 import traceback
 import shlex
 
-from uploaders.uploader import UploaderPlugin, command_exists, command_expects
+from uploaders.uploader import UploaderPlugin
+from plugins import command_exists, command_expects
 
 
 class SshUploaderPlugin(UploaderPlugin):

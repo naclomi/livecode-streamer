@@ -9,7 +9,7 @@ import time
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
-import sysrsync
+import keyring
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -22,6 +22,7 @@ class UploadHandler(FileSystemEventHandler):
         self.local_uri = local_uri
         self.uploader = uploader
         self.renderers = {}
+        self.lastUploadedVersion = {}
         self.min_event_delta = min_event_delta
         self.last_event = None
 
@@ -31,13 +32,25 @@ class UploadHandler(FileSystemEventHandler):
         else:
             files = [self.watch_uri]
         for in_filename in files:
-            out_filename = os.path.splitext(os.path.basename(in_filename))[0] + ".html"
-            out_full_filename = os.path.join(self.local_uri, out_filename)            
+            # TODO: make out filename relative to watch_uri:
+            out_filename = os.path.basename(in_filename) + ".html"
+            out_full_filename = os.path.join(self.local_uri, out_filename)
+            mod_time = os.path.getmtime(in_filename)
+            if in_filename in self.lastUploadedVersion:
+                if mod_time == self.lastUploadedVersion[in_filename]:
+                    continue
+            self.lastUploadedVersion[in_filename] = mod_time
+
             if in_filename not in self.renderers:
                 self.renderers[in_filename] = get_renderer(in_filename, out_full_filename)
             self.renderers[in_filename].render()
             print("Processed {:} into {:} using {:}".format(in_filename, out_full_filename, type(self.renderers[in_filename]).__name__))
+
+        # TODO: upload file list instead of directory, so that we can skip
+        #       unchanged files:
         self.uploader.uploadDirectory(self.local_uri)
+        print("Uploaded {:} to {:}".format(self.local_uri, self.uploader.uri))
+
 
     def on_modified(self, event):
         # Debounce filesystems where a save triggers multiple
@@ -60,11 +73,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("watch_dir", metavar="WATCH_DIR", help="Directory to watch for changing source files")
     parser.add_argument("remote_uri", metavar="REMOTE_URI", help="Remote URI to upload HTML-rendered copies of the watched source to")
-    
-    args = parser.parse_args()
+    parser.add_argument("--configure-uploader", action="store_true", help="Configure settings for the in-use uploader plugin")
 
-    uploader = get_uploader(args.remote_uri)
-    print("Using " + type(uploader).__name__)
+    args = parser.parse_args()
+    uploader_type = get_uploader(args.remote_uri)
+    print("Using " + uploader_type.__name__)
+    uploader = uploader_type(args.remote_uri, args.configure_uploader)
 
     with tempfile.TemporaryDirectory() as serve_dir:
         print("Staging directory is " + serve_dir)

@@ -1,48 +1,94 @@
 import os
 import subprocess
 import traceback
+import shlex
 
 from uploaders.uploader import UploaderPlugin, command_exists, command_expects
 
-class ScpUploader(UploaderPlugin):
+
+class SshUploaderPlugin(UploaderPlugin):
+    COMMAND_NAME = ""
+    EXISTS_FLAGS = []
+    UPLOAD_FLAGS = []
+    PRIORITY = 10
+
+    CONFIG_FLAGS_PLACEHOLDER = object()
+
+    @classmethod
+    def canHandleURI(cls, uri):
+        if cls.COMMAND_NAME == "":
+            return False
+        if ":" not in uri:
+            return False
+        return command_exists([cls.COMMAND_NAME] + cls.EXISTS_FLAGS)
+
+    @classmethod
+    def priority(cls, uri):
+        return cls.PRIORITY
+
+    @classmethod
+    def configure(cls, uri, forced, old_config):
+        if forced:
+            if "flags" in old_config:
+                default = old_config["flags"]
+                old_flags = " [{:}]".format(old_config["flags"])
+            else:
+                default = ""
+                old_flags = ""
+            flags = input("Please enter command-line flags for {:}{:}: ".format(cls.COMMAND_NAME, old_flags))
+            if flags == "":
+                flags = default
+            return {"flags": flags}
+        else:
+            return {}
+
+    def uploadDirectory(self, path):
+        if "flags" in self.config:
+            cfg_flags = shlex.split(self.config["flags"])
+        else:
+            cfg_flags = []
+
+        final_cmd = [self.COMMAND_NAME]
+        for flag in self.UPLOAD_FLAGS:
+            if flag is self.CONFIG_FLAGS_PLACEHOLDER:
+                final_cmd += cfg_flags
+            else:
+                final_cmd.append(flag.format(
+                    LOCAL_DIRECTORY=os.path.join(path, ""),
+                    REMOTE_URI=os.path.join(self.uri,"")
+                ))
+        subprocess.run(final_cmd)
+
+class ScpUploader(SshUploaderPlugin):
+    COMMAND_NAME = "scp"
+    UPLOAD_FLAGS = [
+        SshUploaderPlugin.CONFIG_FLAGS_PLACEHOLDER,
+        "-r", "{LOCAL_DIRECTORY}",
+        "{REMOTE_URI}"]
+    PRIORITY = 10
+
     @classmethod
     def canHandleURI(cls, uri):
         if ":" not in uri:
             return false
         return command_expects(["scp"], "usage: scp")
 
-    @classmethod
-    def priority(cls, uri):
-        return 10
+class RsyncUploader(SshUploaderPlugin):
+    COMMAND_NAME = "rsync"
+    EXISTS_FLAGS = ["--version"]
+    UPLOAD_FLAGS = [
+        SshUploaderPlugin.CONFIG_FLAGS_PLACEHOLDER,
+        "-r", "{LOCAL_DIRECTORY}",
+        "{REMOTE_URI}"]
+    PRIORITY = 20
 
-    def uploadDirectory(self, path):
-        subprocess.run(["scp", "-r", os.path.join(path, "*"), os.path.join(self.uri,"")])
-
-class RsyncUploader(UploaderPlugin):
-    @classmethod
-    def canHandleURI(cls, uri):
-        if ":" not in uri:
-            return false
-        return command_exists(["rsync", "--version"])
-
-    @classmethod
-    def priority(cls, uri):
-        return 20
-
-    def uploadDirectory(self, path):
-        subprocess.run(["rsync", "-r", os.path.join(path, "*"), os.path.join(self.uri,"")])
-
-class WslRsyncUploader(UploaderPlugin):
-    @classmethod
-    def canHandleURI(cls, uri):
-        if ":" not in uri:
-            return false
-        return command_exists(["wsl", "rsync", "--version"])
-
-    @classmethod
-    def priority(cls, uri):
-        return 21
-
-    def uploadDirectory(self, path):
-        subprocess.run(["wsl", "rsync", "-r", "$(wslpath -a '%s')" % os.path.join(path, ""), os.path.join(self.uri,"")])
+class WslRsyncUploader(SshUploaderPlugin):
+    COMMAND_NAME = "wsl"
+    EXISTS_FLAGS = ["rsync", "--version"]
+    UPLOAD_FLAGS = [
+        "rsync",
+        SshUploaderPlugin.CONFIG_FLAGS_PLACEHOLDER,
+        "-r", "$(wslpath -a '{LOCAL_DIRECTORY}')",
+        "{REMOTE_URI}"]
+    PRIORITY = 21
 

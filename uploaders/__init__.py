@@ -26,4 +26,4 @@ def get_uploader(uri):
     if len(possibilities) == 0:
         return None
     possibilities.sort(key=lambda tup: tup[0])
-    return possibilities[-1][1](uri)
+    return possibilities[-1][1]

@@ -33,6 +33,7 @@ class NbconvertRenderer(RendererPlugin):
 
             (body, resources) = html_exporter.from_notebook_node(nb)
             f.write(body)
+        return [self.out_filename]
 
 def renderer(f):
     return ""

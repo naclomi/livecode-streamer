@@ -14,7 +14,7 @@ class RendererPlugin(object):
         self.out_filename = out_filename
 
     def render(self):
-        pass
+        return []
 
 
 class CopyRenderer(RendererPlugin):
@@ -24,3 +24,4 @@ class CopyRenderer(RendererPlugin):
 
     def render(self):
         shutil.copy(self.in_filename, self.out_filename)
+        return [self.out_filename]

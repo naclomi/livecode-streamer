@@ -8,6 +8,7 @@ This project was originally developed within the context of holding [Carpentries
 
 Hard requirements:
 * Python 3.6+
+* [keyring](https://pypi.org/project/keyring/)
 * [watchdog](https://pypi.org/project/watchdog/)
 
 For non-notebook R and Python code:

@@ -31,6 +31,7 @@ class UploadHandler(FileSystemEventHandler):
             files = glob.glob(os.path.join(self.watch_uri, "*"))
         else:
             files = [self.watch_uri]
+        out_files = []
         for in_filename in files:
             # TODO: make out filename relative to watch_uri:
             out_filename = os.path.basename(in_filename) + ".html"
@@ -43,13 +44,12 @@ class UploadHandler(FileSystemEventHandler):
 
             if in_filename not in self.renderers:
                 self.renderers[in_filename] = get_renderer(in_filename)(in_filename, out_full_filename)
-            self.renderers[in_filename].render()
+            out_files += self.renderers[in_filename].render()
             print("Processed {:} into {:} using {:}".format(in_filename, out_full_filename, type(self.renderers[in_filename]).__name__))
 
-        # TODO: upload file list instead of directory, so that we can skip
-        #       unchanged files:
-        self.uploader.uploadDirectory(self.local_uri)
-        print("Uploaded {:} to {:}".format(self.local_uri, self.uploader.uri))
+        self.uploader.uploadFiles(out_files)
+        for file in out_files:
+            print("Uploaded {:} to {:}".format(file, self.uploader.uri))
 
 
     def on_modified(self, event):

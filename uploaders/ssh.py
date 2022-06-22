@@ -43,7 +43,7 @@ class SshUploaderPlugin(UploaderPlugin):
         else:
             return {}
 
-    def uploadDirectory(self, path):
+    def uploadFiles(self, files):
         if "flags" in self.config:
             cfg_flags = shlex.split(self.config["flags"])
         else:
@@ -53,18 +53,18 @@ class SshUploaderPlugin(UploaderPlugin):
         for flag in self.UPLOAD_FLAGS:
             if flag is self.CONFIG_FLAGS_PLACEHOLDER:
                 final_cmd += cfg_flags
+            elif "{LOCAL_FILE}" in flag:
+                for file in files:
+                    final_cmd.append(flag.format(LOCAL_FILE=file))
             else:
-                final_cmd.append(flag.format(
-                    LOCAL_DIRECTORY=os.path.join(path, ""),
-                    REMOTE_URI=os.path.join(self.uri,"")
-                ))
+                final_cmd.append(flag.format(REMOTE_URI=os.path.join(self.uri,"")))
         subprocess.run(final_cmd)
 
 class ScpUploader(SshUploaderPlugin):
     COMMAND_NAME = "scp"
     UPLOAD_FLAGS = [
         SshUploaderPlugin.CONFIG_FLAGS_PLACEHOLDER,
-        "-r", "{LOCAL_DIRECTORY}",
+        "{LOCAL_FILE}",
         "{REMOTE_URI}"]
     PRIORITY = 10
 
@@ -79,7 +79,7 @@ class RsyncUploader(SshUploaderPlugin):
     EXISTS_FLAGS = ["--version"]
     UPLOAD_FLAGS = [
         SshUploaderPlugin.CONFIG_FLAGS_PLACEHOLDER,
-        "-r", "{LOCAL_DIRECTORY}",
+        "{LOCAL_FILE}",
         "{REMOTE_URI}"]
     PRIORITY = 20
 
@@ -89,7 +89,7 @@ class WslRsyncUploader(SshUploaderPlugin):
     UPLOAD_FLAGS = [
         "rsync",
         SshUploaderPlugin.CONFIG_FLAGS_PLACEHOLDER,
-        "-r", "$(wslpath -a '{LOCAL_DIRECTORY}')",
+        "$(wslpath -a '{LOCAL_FILE}')",
         "{REMOTE_URI}"]
     PRIORITY = 21
 

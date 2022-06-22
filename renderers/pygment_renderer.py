@@ -54,6 +54,7 @@ class PygmentsRenderer(RendererPlugin):
                 </html>
             """.format(os.path.basename(self.in_filename), style_seg, code_seg)
             f.write(html_code)
+        return [self.out_filename]
 
 def renderer(f):
     return ""

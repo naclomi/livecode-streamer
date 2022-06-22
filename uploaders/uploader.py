@@ -25,5 +25,5 @@ class UploaderPlugin(object):
             if len(self.config) > 0:
                 keyring.set_password("livecode-streamer", config_key, json.dumps(self.config))
 
-    def uploadDirectory(self, path):
+    def uploadFiles(self, files):
         pass

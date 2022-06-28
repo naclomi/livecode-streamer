@@ -1,7 +1,7 @@
 import plugins
 
 uploaders = plugins.load_plugins(__name__, "UploaderPlugin", [
-    "uploader", "ssh"
+    "uploader", "ssh", "git"
 ])
 
 def get_uploader(uri):

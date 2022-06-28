@@ -14,8 +14,9 @@ class UploaderPlugin(object):
     def configure(cls, uri, forced=False):
         return None
 
-    def __init__(self, uri, force_configuration=False):
+    def __init__(self, local_path, uri, force_configuration=False):
         self.uri = uri
+        self.local_path = local_path
 
         config_key = "{:}/{:}".format(type(self).__name__, uri)
         raw_config = keyring.get_password("livecode-streamer", config_key)
@@ -24,6 +25,11 @@ class UploaderPlugin(object):
             self.config = type(self).configure(uri, force_configuration, self.config if self.config is not None else {})
             if len(self.config) > 0:
                 keyring.set_password("livecode-streamer", config_key, json.dumps(self.config))
+
+        self.initUploader()
+
+    def initUploader(self):
+        pass
 
     def uploadFiles(self, files):
         pass

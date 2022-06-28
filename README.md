@@ -8,25 +8,26 @@ This project was originally developed within the context of holding [Carpentries
 
 Hard requirements:
 * Python 3.6+
-* [keyring](https://pypi.org/project/keyring/)
 * [watchdog](https://pypi.org/project/watchdog/)
+* [keyring](https://pypi.org/project/keyring/)
 
-For non-notebook R and Python code:
+For general syntax highlighting:
 * [pygments](https://pygments.org/)
 
 For Jupyter notebooks:
-* nbconvert (for Jupyter notebooks)
+* [nbformat](https://pypi.org/project/nbformat/)
+* [nbconvert](https://pypi.org/project/nbconvert)
 
 For shell sessions, one of the following terminal emulators:
-* [Hyper](https://hyper.is/) (Windows/MacOS/Linux)
-* [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) (Linux/MacOS)
+* [Hyper](https://hyper.is/) with the [hyper-html-log plugin](https://github.com/naclomi/hyper-html-log) (Windows/MacOS/Linux)
+* [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) with the [terminator-html-log plugin](https://github.com/naclomi/terminator-html-log) (Linux/MacOS) (TODO)
 
-For hosting on Github Pages:
-* git
-
-For hosting on other webspaces:
+For generic webspace hosting:
 * rsync (optional)
 * ssh/scp
+
+For hosting on Github Pages:
+* dulwich
 
 ## Usage
 
@@ -55,7 +56,7 @@ Under the hood, this is what's going on:
 
 This architecture was chosen to maintain the following design goals:
 
-* Minimal server requirements: The end result can be hosted as a static webpage without custom software or configuration on the remote end of the setup. This allows for usage of University-provided personal webspaces, or static page hosts like Github Pages
+* Minimal server requirements: The end result can be hosted as a static webpage without custom software or configuration on the remote end of the setup. This allows for usage of University-provided personal webspaces, static file hosts like AWS S3 Buckets and Azure Blob Storage, or static page hosts like Github Pages
 * Minimal editor integration: Any code editor should be usable with this system, without specialized modifications (a rule we unfortunately have to break for streaming terminal sessions)
 * Robustness and ease-of-use: Ideally, these tools should be able to run with minimal fuss or configuration regardless of operating system or webhost. This project started as a three-line shell script that only worked with Jupyter on Linux, but to make the tool more generally useful more complexity was required.
 

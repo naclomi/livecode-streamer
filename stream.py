@@ -95,10 +95,11 @@ if __name__ == "__main__":
             sys.stderr.write("Could not find specified uploader plugin\n")
             sys.exit(1)
     print("Using " + uploader_type.__name__)
-    uploader = uploader_type(args.remote_uri, args.configure_uploader)
 
     with tempfile.TemporaryDirectory() as serve_dir:
         print("Staging directory is " + serve_dir)
+    
+        uploader = uploader_type(serve_dir, args.remote_uri, args.configure_uploader)
 
         observer = Observer()
         handler = UploadHandler(args.watch_dir, serve_dir, uploader)

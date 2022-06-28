@@ -75,6 +75,16 @@ def getPlatformString():
     return "{:} ({:}) @ '{:}'".format(
         uname.system, uname.release, sys.prefix)
 
+def detectWslWarnings(args):
+    if 'microsoft-standard' in platform.uname().release:
+        cmd = ["df", "--output=source", args.watch_dir]
+        result = subprocess.run(cmd, capture_output=True)
+        stdout = result.stdout.decode()
+        if "drvfs" in stdout:
+            # Watching a windows drive from WSL
+            logging.error("Cannot watch files from a Windows drive from with WSL. Either rerun this script outside of WSL, or keep your watched source files from within WSL's filesystem.")
+            sys.exit(1)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -97,6 +107,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=args.loglevel)
 
     logging.info(getPlatformString())
+    detectWslWarnings(args)
 
     if args.uploader is None:
         uploader_type = get_uploader(args.remote_uri)

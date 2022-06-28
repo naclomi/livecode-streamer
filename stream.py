@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import glob
+import logging
 import os
 import subprocess
 import sys
@@ -80,8 +81,15 @@ if __name__ == "__main__":
     parser.add_argument("remote_uri", metavar="REMOTE_URI", help="Remote URI to upload HTML-rendered copies of the watched source to")
     parser.add_argument("--configure-uploader", action="store_true", help="Configure settings for the in-use uploader plugin")
     parser.add_argument("--uploader", type=str, help="Use a specific uploader plugin, rather than choose one automatically")
+    parser.add_argument(
+        '-v', '--verbose',
+        help="Print extra operating information",
+        action="store_const", dest="loglevel", const=logging.DEBUG,
+        default=logging.WARNING,
+    )
 
     args = parser.parse_args()
+    logging.basicConfig(level=args.loglevel)
 
     if args.uploader is None:
         uploader_type = get_uploader(args.remote_uri)

@@ -1,3 +1,4 @@
+import logging
 import subprocess
 import re
 import traceback
@@ -10,7 +11,7 @@ def load_plugins(package, base_class, plugin_module_names):
             module = importlib.import_module("."+module_name, package=package)
             plugin_modules[module_name] = module
         except Exception:
-            traceback.print_exc()
+            logging.info(traceback.format_exc())
 
     base_class = getattr(plugin_modules[plugin_module_names[0]], base_class)
 
@@ -32,7 +33,7 @@ def get_plugin(uri, plugins):
             if plugin.canHandleURI(uri):
                 possibilities.append((plugin.priority(uri), plugin))
         except Exception:
-            traceback.print_exc()
+            logging.info(traceback.format_exc())
     if len(possibilities) == 0:
         return None
     possibilities.sort(key=lambda tup: tup[0])
@@ -44,7 +45,7 @@ def command_exists(cmd):
         if result.returncode != 0:
             return False
     except Exception:
-        traceback.print_exc()
+        logging.info(traceback.format_exc())
         return False
     return True
 
@@ -54,6 +55,6 @@ def command_expects(cmd, pattern):
         if re.match(result.stdout.decode(), pattern) is None:
             return False
     except Exception:
-        traceback.print_exc()
+        logging.info(traceback.format_exc())
         return False
     return True

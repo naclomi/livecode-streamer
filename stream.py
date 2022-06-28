@@ -3,6 +3,7 @@ import argparse
 import glob
 import logging
 import os
+import platform
 import subprocess
 import sys
 import tempfile
@@ -69,6 +70,10 @@ class UploadHandler(FileSystemEventHandler):
 
         self.update()
 
+def getPlatformString():
+    uname = platform.uname()
+    return "{:} ({:}) @ '{:}'".format(
+        uname.system, uname.release, sys.prefix)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -90,6 +95,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     logging.basicConfig(level=args.loglevel)
+
+    logging.info(getPlatformString())
 
     if args.uploader is None:
         uploader_type = get_uploader(args.remote_uri)

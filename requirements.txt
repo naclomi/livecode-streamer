@@ -11,6 +11,10 @@ keyring
 # azure-storage-blob
 
 ########################
+## For AWS plugin:
+# boto3
+
+########################
 ## For jupyter plugins:
 # nbformat
 # nbconvert

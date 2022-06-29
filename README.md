@@ -29,6 +29,11 @@ For generic webspace hosting:
 For hosting on Github Pages:
 * dulwich
 
+For hosting on Azure blob storage:
+* azure-storage-blob
+
+
+
 ## Usage
 
 Run the `livecode-streamer` script in a background terminal window during your lesson:

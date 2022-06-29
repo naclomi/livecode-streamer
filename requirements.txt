@@ -1,3 +1,17 @@
 watchdog
 pygments
 keyring
+
+########################
+## For git plugins:
+# dulwich
+
+########################
+## For azure plugin:
+# azure-storage-blob
+
+########################
+## For jupyter plugins:
+# nbformat
+# nbconvert
+

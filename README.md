@@ -4,14 +4,36 @@ Tools for educators running "live coding" sessions to make their source files an
 
 This project was originally developed within the context of holding [Carpentries workshops](https://carpentries.org/) to teach UNIX shells, git, Python, and R, though it should be generalizable to other programming environments and teaching contexts.
 
+## Usage
+
+Run the `livecode-streamer` script in a background terminal window during your lesson:
+
+```
+stream.py [options] WATCH_DIR REMOTE_URI
+```
+
+`WATCH_DIR` is a local directory containing the source files you are working on, and `REMOTE_URI` is a remote webserver to reflect those documents to. Whenever you save your source files, the script will upload HTML versions of them to the remote server. Students can view these files in their browser, and refresh the page as needed to recieve new content.
+
+To stream a shell session, you must use a terminal emulator that supports automatic logging to HTML. This repository contains plugins to do so with [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) (Linux/MacOS) and [Hyper](https://hyper.is/) (Windows/MacOS/Linux) (see the subdirectories in this repo's `plugins/` folder). On starting a new terminal session, just use one of these plugins to log your session to the `WATCH_DIR`.
+
+### Hosting and remote URIs
+
+The most ideal way to host the output of this tool is on a personal web hosting account that allows access over SSH. Most universities provide this service to their faculty and staff, a la [UW's shared web hosting](https://itconnect.uw.edu/connect/web-publishing/shared-hosting/). The instructions for setting this account up, unfortunately, vary from institution to institution. Once you have access, though, the value to put in `REMOTE_URI` would be the remote destination you would normally put in the second half of an `scp` command (eg: `username@servername:remote_path`).
+
+If suitable institutionally provided web hosting isn't available, there are a few other options:
+
+- **Amazon AWS** or **Microsoft Azure** object storage: this script can directly upload contents to an AWS S3 bucket or Azure Blob Storage contianer, both of which can be configured to serve static webpages. The downside of these services is that they are not free
+- **GitHub Pages**: You can create a repo on GitHub and have this script automatically push updates to it. This repo can then be served as a website through GitHub's "Pages" feature. This option is free, though GitHub has a soft limit of 10 page updates per hour.
+
+
+In all cases, access credentials are securely stored in your operating system's keychain.
+
 ## Dependencies
 
 Hard requirements:
 * Python 3.6+
 * [watchdog](https://pypi.org/project/watchdog/)
 * [keyring](https://pypi.org/project/keyring/)
-
-For general syntax highlighting:
 * [pygments](https://pygments.org/)
 
 For Jupyter notebooks:
@@ -27,54 +49,13 @@ For generic webspace hosting:
 * ssh/scp
 
 For hosting on Github Pages:
-* dulwich
+* [dulwich](https://pypi.org/project/dulwich/)
 
 For hosting on Azure blob storage:
-* azure-storage-blob
+* [azure-storage-blob](https://pypi.org/project/azure-storage-blob/)
 
+For hosting on AWS S3 buckets:
+* [boto3](https://pypi.org/project/boto3/)
 
-
-## Usage
-
-Run the `livecode-streamer` script in a background terminal window during your lesson:
-
-```
-stream.py [options] WATCH_DIR REMOTE_URI
-```
-
-`WATCH_DIR` is a local directory containing the source files you are working on, and `REMOTE_URI` is a remote webserver to reflect those documents to. Whenever you save your source files, the script will re-render them to HTML and upload them to the remote server. Students can view these files in their browser, and refresh the page as needed to recieve new content.
-
-To stream a shell session, you must use a terminal emulator that supports automatic logging to HTML. This repository contains plugins to do so with [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) (Linux/MacOS) and [Hyper](https://hyper.is/) (Windows/MacOS/Linux). For instructions on how to install and use those plugins, see the README.md files in `plugins/terminator` and `plugins/hyper`, respectively. On starting a new terminal session, just use one of these plugins to log your session to the `WATCH_DIR`.
-
-### Hosting and remote URIs
-
-TODO: host on github pages or on local webspace
-
-## Design
-
-Under the hood, this is what's going on:
-
-1. The script goes to sleep and gets woken up whenever a file modification event triggers in the watch directory
-2. The script goes through every file in the watch directory and renders it, from scratch, to an HTML file
-3. The script uploads the HTML files to a webserver, ideally in a way that minimizes upload bandwidth (ideally with rsync or git, and falling back to scp when neither are available)
-4. The script goes back to sleep and waits for the next file modification.
-
-This architecture was chosen to maintain the following design goals:
-
-* Minimal server requirements: The end result can be hosted as a static webpage without custom software or configuration on the remote end of the setup. This allows for usage of University-provided personal webspaces, static file hosts like AWS S3 Buckets and Azure Blob Storage, or static page hosts like Github Pages
-* Minimal editor integration: Any code editor should be usable with this system, without specialized modifications (a rule we unfortunately have to break for streaming terminal sessions)
-* Robustness and ease-of-use: Ideally, these tools should be able to run with minimal fuss or configuration regardless of operating system or webhost. This project started as a three-line shell script that only worked with Jupyter on Linux, but to make the tool more generally useful more complexity was required.
-
-The following are anti-goals we are NOT trying to solve:
-
-* Keystroke-level page updates: The primary use case for these documents is for students to refer to work on the instructor's computer that has scrolled off-screen. It is not important to build a system that can support this frequency of updates.
-* Collaborative editing: Documents are read-only and authored by a single person
-* Sandbox execution environments: The audience is expected to be following along with the code on their own set-up; being able to run code in-webpage is less desirable than being able to reproduce the webpage's contents offline in the students' own editors.
-* Student feedback, polling, or viewer metrics: These are challenges best left to their own dedicated tools.
-
-## Contributions
-
-This toolset's primary maintainers are currently Naomi Alterman and Noah Benson at the University of Washington's eScience Institute
-
-Pull requests are welcome, though (:
-
+For hosting locally over an ngrok tunnel:
+* [pyngrok](https://pypi.org/project/pyngrok/)

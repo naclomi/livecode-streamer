@@ -15,8 +15,8 @@ import keyring
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-from renderers import renderers, get_renderer
-from uploaders import uploaders, get_uploader
+import renderers
+import uploaders
 
 class UploadHandler(FileSystemEventHandler):
     def __init__(self, watch_uri, local_uri, uploader, min_event_delta=.5):
@@ -45,7 +45,7 @@ class UploadHandler(FileSystemEventHandler):
             self.lastUploadedVersion[in_filename] = mod_time
 
             if in_filename not in self.renderers:
-                self.renderers[in_filename] = get_renderer(in_filename)(in_filename, out_full_filename)
+                self.renderers[in_filename] = renderers.get_renderer(in_filename)(in_filename, out_full_filename)
             out_files += self.renderers[in_filename].render()
             print("Processed {:} into {:} using {:}".format(in_filename, out_full_filename, type(self.renderers[in_filename]).__name__))
 
@@ -86,16 +86,12 @@ def detectWslWarnings(args):
             sys.exit(1)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="Supported uploader plugins: {:}\nSupported render plugins: {:}".format(
-            ", ".join(plugin .__name__ for plugin in uploaders),
-            ", ".join(plugin .__name__ for plugin in renderers)
-    ))
+    parser = argparse.ArgumentParser()
     parser.add_argument("watch_dir", metavar="WATCH_DIR", help="Directory to watch for changing source files")
     parser.add_argument("remote_uri", metavar="REMOTE_URI", help="Remote URI to upload HTML-rendered copies of the watched source to")
     parser.add_argument("--configure-uploader", action="store_true", help="Configure settings for the in-use uploader plugin")
     parser.add_argument("--uploader", type=str, help="Use a specific uploader plugin, rather than choose one automatically")
+    parser.add_argument("--list-plugins", action="store_true", help="List plugins available and exit")
     parser.add_argument(
         '-v', '--verbose',
         help="Print extra operating information",
@@ -109,11 +105,26 @@ if __name__ == "__main__":
     logging.info(getPlatformString())
     detectWslWarnings(args)
 
+
+    if args.list_plugins:
+        uploaders.get_uploader("")
+        renderers.get_renderer("")
+        print("Supported uploader plugins: {:}\nSupported render plugins: {:}".format(
+            ", ".join(plugin.__name__ for plugin in uploaders.plugin_classes),
+            ", ".join(plugin.__name__ for plugin in renderers.plugin_classes)
+            ))
+        sys.exit(0)
+
+
     if args.uploader is None:
-        uploader_type = get_uploader(args.remote_uri)
+        uploader_type = uploaders.get_uploader(args.remote_uri)
+        if uploader_type is None:
+            sys.stderr.write("Could not identify an uploader capable of handling remote URI\n")
+            sys.exit(1)
     else:
         uploader_type = None
-        for uploader in uploaders:
+        uploaders.get_uploader("")
+        for uploader in uploaders.plugin_classes:
             if uploader.__name__ == args.uploader:
                 uploader_type = uploader
                 break

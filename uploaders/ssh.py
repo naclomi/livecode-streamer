@@ -71,7 +71,7 @@ class ScpUploader(SshUploaderPlugin):
     @classmethod
     def canHandleURI(cls, uri):
         if ":" not in uri:
-            return false
+            return False
         return command_expects(["scp"], "usage: scp")
 
 class RsyncUploader(SshUploaderPlugin):

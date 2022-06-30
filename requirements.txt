@@ -15,6 +15,10 @@ keyring
 # boto3
 
 ########################
+## For localhost plugin:
+# pyngrok
+
+########################
 ## For jupyter plugins:
 # nbformat
 # nbconvert

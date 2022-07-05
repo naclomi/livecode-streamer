@@ -1,3 +1,6 @@
 [submodule "plugins/hyper-html-log"]
 	path = plugins/hyper-html-log
 	url = git@github.com:naclomi/hyper-html-log.git
+[submodule "plugins/terminator-html-log"]
+	path = plugins/terminator-html-log
+	url = git@github.com:naclomi/terminator-html-log.git

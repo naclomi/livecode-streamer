@@ -24,7 +24,7 @@ The following are anti-goals we are NOT trying to solve:
 
 ## Contributions
 
-This toolset's primary maintainers are currently Naomi Alterman and Noah Benson at the University of Washington's eScience Institute
+This toolset's primary maintainer is currently Naomi Alterman at the University of Washington's eScience Institute
 
 Pull requests are welcome, though (:
 

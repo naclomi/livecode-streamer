@@ -1,11 +1,8 @@
 # livecode-streamer
 
-Tools for educators running "live coding" sessions to make their source files and terminal sessions viewable as read-only webpages, so that students can refer back to off-screen commands as reference.
+Tool for educators running "live coding" sessions to make their source files and terminal sessions viewable as read-only webpages, so that students can refer back to off-screen commands as reference.
 
 This project was originally developed within the context of holding [Carpentries workshops](https://carpentries.org/) to teach UNIX shells, git, Python, and R, though it should be generalizable to other programming environments and teaching contexts.
-
-## Installataion
-
 
 ## Usage
 

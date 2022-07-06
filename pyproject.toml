@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "livecode-streamer"
+version = "0.1.0"
+description = "Tool for educators running \"live coding\" sessions to make their source files and terminal sessions viewable as read-only webpages, so that students can refer back to off-screen commands as reference."
+authors = ["Naomi Alterman <naomila@uw.edu>"]
+license = "MIT"
+
+[tool.poetry.scripts]
+livecode-streamer = 'livecode_streamer.stream:main'
+
+[tool.poetry.dependencies]
+python = "^3.7"
+watchdog = "^2.1.9"
+Pygments = "^2.12.0"
+keyring = "^23.6.0"
+dulwich = {version="^0.20.44", optional=true}
+azure-storage-blob = {version="^12.12.0", optional=true}
+boto3 = {version="^1.24.23", optional=true}
+pyngrok = {version="^5.1.0", optional=true}
+nbformat = {version="^5.4.0", optional=true}
+nbconvert = {version="^6.5.0", optional=true}
+
+[tool.poetry.extras]
+git = ["dulwich"]
+azure = ["azure-storage-blob"]
+aws = ["boto3"]
+localhost = ["pyngrok"]
+jupyter = ["nbformat", "nbconvert"]
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -4,12 +4,15 @@ Tools for educators running "live coding" sessions to make their source files an
 
 This project was originally developed within the context of holding [Carpentries workshops](https://carpentries.org/) to teach UNIX shells, git, Python, and R, though it should be generalizable to other programming environments and teaching contexts.
 
+## Installataion
+
+
 ## Usage
 
-Run the `livecode-streamer` script in a background terminal window during your lesson:
+Run the `livecode-streamer` command in a background terminal window during your lesson:
 
 ```
-stream.py [options] WATCH_DIR REMOTE_URI
+livecode-streamer [options] WATCH_DIR REMOTE_URI
 ```
 
 `WATCH_DIR` is a local directory containing the source files you are working on, and `REMOTE_URI` is a remote webserver to reflect those documents to. Whenever you save your source files, the script will upload HTML versions of them to the remote server. Students can view these files in their browser, and refresh the page as needed to recieve new content.
@@ -28,10 +31,16 @@ If suitable institutionally provided web hosting isn't available, there are a fe
 
 In all cases, access credentials are securely stored in your operating system's keychain.
 
-## Dependencies
+## Installataion and dependencies
 
-Hard requirements:
-* Python 3.6+
+Install with `pip install livecode-streamer[jupyter]`,
+which includes all dependencies needed for basic syntax highlighting, rendering jupyter notebooks, and uploading via `scp`/`rsync`.
+
+To install with dependencies for _all_ plugins:
+`pip install livecode-streamer[jupyter, git, azure, aws, localhost]`
+
+Core requirements:
+* Python 3.7+
 * [watchdog](https://pypi.org/project/watchdog/)
 * [keyring](https://pypi.org/project/keyring/)
 * [pygments](https://pygments.org/)

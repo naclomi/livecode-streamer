@@ -85,7 +85,7 @@ def detectWslWarnings(args):
             logging.error("Cannot watch files from a Windows drive from with WSL. Either rerun this script outside of WSL, or keep your watched source files from within WSL's filesystem.")
             sys.exit(1)
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("watch_dir", metavar="WATCH_DIR", help="Directory to watch for changing source files")
     parser.add_argument("remote_uri", metavar="REMOTE_URI", help="Remote URI to upload HTML-rendered copies of the watched source to")
@@ -152,3 +152,6 @@ if __name__ == "__main__":
         finally:
             observer.stop()
             observer.join()
+
+if __name__ == "__main__":
+    main()

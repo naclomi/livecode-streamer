@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "livecode-streamer"
-version = "0.1.1"
+version = "0.1.2"
 description = "Tool for educators running \"live coding\" sessions to make their source files and terminal sessions viewable as read-only webpages, so that students can refer back to off-screen commands as reference."
 authors = ["Naomi Alterman <naomila@uw.edu>"]
 license = "MIT"

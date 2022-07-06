@@ -34,7 +34,7 @@ Install with `pip install livecode-streamer[jupyter]`,
 which includes all dependencies needed for basic syntax highlighting, rendering jupyter notebooks, and uploading via `scp`/`rsync`.
 
 To install with dependencies for _all_ plugins:
-`pip install livecode-streamer[jupyter, git, azure, aws, localhost]`
+`pip install livecode-streamer[jupyter,git,azure,aws,localhost]`
 
 Core requirements:
 * Python 3.7+

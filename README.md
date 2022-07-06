@@ -14,7 +14,7 @@ livecode-streamer [options] WATCH_DIR REMOTE_URI
 
 `WATCH_DIR` is a local directory containing the source files you are working on, and `REMOTE_URI` is a remote webserver to reflect those documents to. Whenever you save your source files, the script will upload HTML versions of them to the remote server. Students can view these files in their browser, and refresh the page as needed to recieve new content.
 
-To stream a shell session, you must use a terminal emulator that supports automatic logging to HTML. This repository contains plugins to do so with [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) (Linux/MacOS) and [Hyper](https://hyper.is/) (Windows/MacOS/Linux) (see the subdirectories in this repo's `plugins/` folder). On starting a new terminal session, just use one of these plugins to log your session to the `WATCH_DIR`.
+To stream a shell session, you must use a terminal emulator that supports automatic logging to HTML. This repository contains plugins to do so with [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) (Linux/MacOS) and [Hyper](https://hyper.is/) (Windows/MacOS/Linux) (see the subdirectories in this repo's `external-plugins/` folder). On starting a new terminal session, just use one of these plugins to log your session to the `WATCH_DIR`.
 
 ### Hosting and remote URIs
 

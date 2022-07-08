@@ -1,8 +1,8 @@
+import logging
 import traceback
 
 import nbformat
 import nbconvert
-import jinja2
 from renderers.renderer import RendererPlugin
 
 class NbconvertRenderer(RendererPlugin):
@@ -14,7 +14,7 @@ class NbconvertRenderer(RendererPlugin):
                 nbformat.reads(raw_nb, as_version=4)
             return True
         except Exception:
-            # TODO: log error message
+            logging.info(traceback.format_exc())
             return False
 
     @classmethod

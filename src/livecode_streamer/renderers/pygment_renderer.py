@@ -10,6 +10,11 @@ from renderers.renderer import RendererPlugin
 class PygmentsRenderer(RendererPlugin):
     @classmethod
     def canHandleURI(cls, in_filename):
+        if in_filename.lower().endswith(".html") or in_filename.lower().endswith(".htm"):
+            # Let the copy renderer just directly move HTML files
+            # to the webspace, unchanged
+            return False
+
         try:
             pygments.lexers.get_lexer_for_filename(in_filename)
             return True

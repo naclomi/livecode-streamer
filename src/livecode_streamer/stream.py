@@ -35,6 +35,8 @@ class UploadHandler(FileSystemEventHandler):
             files = [self.watch_uri]
         out_files = []
         for in_filename in files:
+            if os.path.isdir(in_filename):
+                continue
             # TODO: make out filename relative to watch_uri:
             out_filename = os.path.basename(in_filename) + ".html"
             out_full_filename = os.path.join(self.local_uri, out_filename)

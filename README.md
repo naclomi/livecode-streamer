@@ -4,6 +4,8 @@ Tool for educators running "live coding" sessions to make their source files and
 
 This project was originally developed within the context of holding [Carpentries workshops](https://carpentries.org/) to teach UNIX shells, git, Python, and R, though it should be generalizable to other programming environments and teaching contexts.
 
+For a captioned video overview of the tool, see our [lightning talk from CarpentryCon 2022](https://www.youtube.com/watch?v=a3uJj7Eqwzg).
+
 ## Usage
 
 Run the `livecode-streamer` command in a background terminal window during your lesson:
@@ -14,7 +16,7 @@ livecode-streamer [options] WATCH_DIR REMOTE_URI
 
 `WATCH_DIR` is a local directory containing the source files you are working on, and `REMOTE_URI` is a remote webserver to reflect those documents to. Whenever you save your source files, the script will upload HTML versions of them to the remote server. Students can view these files in their browser, and refresh the page as needed to recieve new content.
 
-To stream a shell session, you must use a terminal emulator that supports automatic logging to HTML. This repository contains plugins to do so with [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) (Linux/MacOS) and [Hyper](https://hyper.is/) (Windows/MacOS/Linux) (see the subdirectories in this repo's `external-plugins/` folder). On starting a new terminal session, just use one of these plugins to log your session to the `WATCH_DIR`.
+To stream a shell session, you must use a terminal emulator that supports automatic logging to HTML. This repository contains plugins to do so with [Terminator](https://github.com/naclomi/terminator-html-log) (Linux/MacOS) and [Hyper](https://github.com/naclomi/hyper-html-log) (Windows/MacOS/Linux) (see the subdirectories in this repo's `external-plugins/` folder). On starting a new terminal session, just use one of these plugins to log your session to the `WATCH_DIR`.
 
 ### Hosting and remote URIs
 
@@ -48,7 +50,7 @@ For Jupyter notebooks:
 
 For shell sessions, one of the following terminal emulators:
 * [Hyper](https://hyper.is/) with the [hyper-html-log plugin](https://github.com/naclomi/hyper-html-log) (Windows/MacOS/Linux)
-* [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) with the [terminator-html-log plugin](https://github.com/naclomi/terminator-html-log) (Linux/MacOS) (TODO)
+* [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) with the [terminator-html-log plugin](https://github.com/naclomi/terminator-html-log) (Linux/MacOS)
 
 For generic webspace hosting:
 * rsync (optional)
@@ -65,3 +67,7 @@ For hosting on AWS S3 buckets:
 
 For hosting locally over an ngrok tunnel:
 * [pyngrok](https://pypi.org/project/pyngrok/)
+
+## Contributing
+
+Contributions of bugs, new plugins, or feature suggestions are all welcome. For more information, see [CONTRIBUTING.md](https://github.com/naclomi/livecode-streamer/blob/main/CONTRIBUTING.md).

@@ -140,7 +140,10 @@ def main():
     
         uploader = uploader_type(serve_dir, args.remote_uri, args.configure_uploader)
 
-        observer = Observer()
+        # The Observer() object fails to detect modification time changes on Mac
+        # so we use the PollingObserver instead.
+        from watchdog.observers.polling import PollingObserver
+        observer = PollingObserver()
         handler = UploadHandler(args.watch_dir, serve_dir, uploader)
         observer.schedule(handler, args.watch_dir, recursive=True)
         observer.start()

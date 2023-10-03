@@ -13,6 +13,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 import keyring
 from watchdog.observers import Observer
+from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 
 import renderers
@@ -94,6 +95,8 @@ def main():
     parser.add_argument("--configure-uploader", action="store_true", help="Configure settings for the in-use uploader plugin")
     parser.add_argument("--uploader", type=str, help="Use a specific uploader plugin, rather than choose one automatically")
     parser.add_argument("--list-plugins", action="store_true", help="List plugins available and exit")
+    parser.add_argument("--fs-poll", action="store_true", help="Watch files by periodically polling for changes rather than using platform-specific OS hooks")
+
     parser.add_argument(
         '-v', '--verbose',
         help="Print extra operating information",
@@ -140,10 +143,11 @@ def main():
     
         uploader = uploader_type(serve_dir, args.remote_uri, args.configure_uploader)
 
-        # The Observer() object fails to detect modification time changes on Mac
-        # so we use the PollingObserver instead.
-        from watchdog.observers.polling import PollingObserver
-        observer = PollingObserver()
+        if args.fs_poll is True:
+            observer = PollingObserver()
+        else:
+            observer = Observer()
+        print("Using {:} to watch for changes".format(type(observer).__name__))
         handler = UploadHandler(args.watch_dir, serve_dir, uploader)
         observer.schedule(handler, args.watch_dir, recursive=True)
         observer.start()

@@ -49,6 +49,8 @@ For Jupyter notebooks:
 * [nbconvert](https://pypi.org/project/nbconvert)
 
 For shell sessions, one of the following terminal emulators:
+* [JupyterLab terminals](https://jupyterlab.readthedocs.io/en/latest/user/terminal.html) with the [jupyterlab_terminal_html_log
+ plugin](https://github.com/naclomi/jupyterlab-terminal-html-log)
 * [Hyper](https://hyper.is/) with the [hyper-html-log plugin](https://github.com/naclomi/hyper-html-log) (Windows/MacOS/Linux)
 * [Terminator](https://terminator-gtk3.readthedocs.io/en/latest/) with the [terminator-html-log plugin](https://github.com/naclomi/terminator-html-log) (Linux/MacOS)
 
